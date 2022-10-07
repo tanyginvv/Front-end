@@ -1,48 +1,79 @@
-const presentation = {
-    editor,
-    title,
-    slides: [slide],
-    speakerIsNotes,
+const editor = {
+    presentation,
+    tools: [tool]
 }
 
-const editor = {
-    tools: [tool],
+const presentation = {
+    presentationName: 'Презентация',
+    slides: [slide]
 }
 
 const slide = {
-    background,
+    background: 'white',
     blocks: [block]
 }
 
-const speakerIsNotes = {
-    text,
-}
-
 const block = {
-    type,     // Text | Image | Figure
-    position,
-    dimensions,
-}
-
-const dimensions = {
-    width,
-    height,
+    typeBlock: text | image | figure,
+    width: 1920,
+    height: 1080,
+    position: {
+        x: 232,
+        y: 242
+    }
 }
 
 const text = {
-    string,
-    dimensions,
-    font,
-    color,
+    content: 'Привет',
+    width: 400,
+    height: 600,
+    fontFamily: 'Roboto',
+    color: 'black'
 }
 
 const image = {
-    dimensions,
-    src,
+    width: 400,
+    height: 600,
+    src: '/study/hello.jpg'
 }
 
-const figures = {
-    figureType, // Rectangle | Circle | Triangle
-    color,
-    borderColor,
+const figure = {
+    figureType: rectangle | circle | triangle,
+    color: 'black',
+    borderColor: 'white'
+}
+
+const circle = {
+  centerPoint: {
+    x: 40,
+    y: 30
+  },
+  radiusPoint: {
+    x: 80,
+    y: 40
+  }
+}
+
+const rectangle = {
+  width: 400,
+  height: 600,
+  mainPoint: {
+    x: 80,
+    y: 40
+  }
+}
+
+const triangle = {
+  firstPoint: {
+    x: 40,
+    y: 30
+  },
+  secondPoint: {
+    x: 80,
+    y: 40
+  },
+  thirdPoint: {
+    x: 40,
+    y: 30
+  } 
 }
