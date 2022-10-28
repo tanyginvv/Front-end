@@ -1,63 +1,48 @@
 const block1 = {
     id: '1',
     typeBlock: 'text',
+    content: 'hello',
+    fontFamily: 'Roboto',
+    fontWidth: 'Bold',
+    fontSize: 24,
+    color: 'black',
     position: {
         x: 232,
         y: 435
     },
     width: 400,
-    height: 600,
-    selected: true
+    height: 600
 }
 
 const block2 = {
     id: '2',
     typeBlock: 'image',
+    src: '/study/hello.jpg',
     position: {
         x: 400,
         y: 200
-    },
-    selected: false
+    }
 }
 
 const block3 = {
     id: '3',
     typeBlock: 'figure',
+    figureType: 'circle',
     position: {
         x: 300,
         y: 200
-    },
-    selected: false
-}
-
-const text = {
-    ...block1,
-    content: 'hello',
-    fontFamily: 'Roboto',
-    fontWidth: 'Bold',
-    fontSize: 24,
-    color: 'black'
-}
-
-const figure = {
-    ...block2,
-    figureType: 'circle'
-}
-
-const image = {
-    src: '/study/hello.jpg'
+    }
 }
 
 const slide1 = {
     id: '1',
     blocks: [block1, block2, block3],
-    background: "white",
-    // selected: true
+    background: "white"
 }
 
 const presentation = {
     presentationName: 'Презентация',
-    selectedSlidesIds: ['1'],
+    selectedSlidesIds: ['1'],                    //Показывается последний элемент массива
     selectedObjectsIds: ['1', '2'],
     slides: [slide1]
 }
@@ -96,99 +81,85 @@ const triangle = {
 
 
 
+function showPresentation(editor) {
+    return editor;
+}
 
 function changePresentationName(editor) {
-    return presentation;
+    return editor;
 }
 
 function deleleSlides(editor) {
-    return 0;
+    return editor;
 }
 
 //block
-function addBlockText(editor){
-    return slide;
+function addBlockText(editor) {
+    return editor;
 }
-function addBlockImage(editor){
-    return slide;
+function addBlockImage(editor) {
+    return editor;
 }
-function addBlockFigure(editor){
-    return slide;
+function addBlockFigure(editor) {
+    return editor;
 }
-function deleteBlock(editor){
-    return 0;
+function deleteBlock(editor) {
+    return editor;
 }
-function moveBlock(block, editor){
-    return block;
+function moveBlock(editor, block) {
+    return editor;
+}
+function resizeFigure(editor, figure) {
+    return editor;
+}
+function editColor(editor, figure, color) {
+    return editor;
+}
+function editBorderColor(editor, figure, color) {
+    return editor;
 }
 
 //chars
-function editTextSize(editor){
-    return text;
+function editTextSize(editor) {
+    return editor;
 }
-function editTextColor(editor){
-    return text;
+function editTextColor(editor) {
+    return editor;
 }
-function editTextContent(editor){
-    return text;
+function editTextContent(editor) {
+    return editor;
 }
-function editTextFontFamily(editor, fontFamily){
-    return text;
+function editTextFontFamily(editor, fontFamily) {
+    return editor;
 }
-function editTextFontSize(editor, fontSize){
-    return text;
+function editTextFontSize(editor, fontSize) {
+    return editor;
 }
-function editTextFontWidth(editor, fontWidth){
-    return text;
+function editTextFontWidth(editor, fontWidth) {
+    return editor;
 }
 
 //image
-function createImage(src, editor){
-    return image;
+function createImage(editor, src) {
+    return editor;
 }
-function editImageSize(image, editor){
-    return image;
+function editImageSize(editor, image) {
+    return editor;
 }
 
 //circle
-function createCircle(editor){
-    return circle;
-}
-function moveCircleCenter(editor, centerPoint){
-    return circle;
-}
-function editCircleRadius(editor, radius){
-    return circle;
-}
-function editCircleColor(editor, color){
-    return circle;
-}
-function editCircleBorderColor(editor, borderColor){
-    return circle;
+function createCircle(editor) {
+    return editor;
 }
 
 //rectangle
-function createRectangle(editor){
-    return rectangle;
+function createRectangle(editor) {
+    return editor;
 }
-function editRectangleColor(editor, color){
-    return rectangle;
-}
-function editRectangleSize(editor, size){
-    return rectangle;
-}
-function editRectangleBorderColor(editor, borderColor){
-    return rectangle;
-} 
 
 //triangle
-function createTriangle(editor){
-    return triangle;
+function createTriangle(editor) {
+    return editor;
 }
-function moveTriangle(editor, centerPoint){
-    return triangle;
-}
-function editTriangleColor(editor, color){
-    return triangle;
-}
+
 
