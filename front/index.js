@@ -2,22 +2,20 @@ const block1 = {
     id: '1',
     typeBlock: 'text',
     content: 'hello',
-    fontFamily: 'Roboto',
-    fontWidth: 'Bold',
-    fontSize: 24,
-    color: 'black',
+    width: 400,
+    height: 600,
     position: {
         x: 232,
         y: 435
-    },
-    width: 400,
-    height: 600
+    }
 }
 
 const block2 = {
     id: '2',
     typeBlock: 'image',
-    src: '/study/hello.jpg',
+    content: '',
+    width: 400,
+    height: 600,
     position: {
         x: 400,
         y: 200
@@ -27,11 +25,28 @@ const block2 = {
 const block3 = {
     id: '3',
     typeBlock: 'figure',
-    figureType: 'circle',
+    content: '',
+    width: 400,
+    height: 600,
     position: {
         x: 300,
         y: 200
     }
+}
+
+const text = {
+    fontFamily: 'Roboto',
+    fontWidth: 'Bold',
+    fontSize: 24,
+    color: 'black'
+}
+
+const image = {
+    src: '/study/hello.jpg'
+}
+
+const figure = {
+    figureType: 'circle'
 }
 
 const slide1 = {
@@ -48,12 +63,10 @@ const presentation = {
 }
 
 const editor = {
-    presentation,
-    tools: []
+    presentation
 }
 
 const circle = {
-    ...figure,
     centerPoint: {
         x: 40,
         y: 30
