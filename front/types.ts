@@ -1,77 +1,74 @@
-type block = {
-    id: string;
-    typeBlock: text | image | figure;
-    content: string;
-    width: number;
-    height: number;
-    position: {
-        x: number;
-        y: number;
-    }
+type Presentation = {
+    presentationName: string,
+    slides: Slide[],
+    selectedSlides: Slide[],
+    slideSize: Size       
 }
 
-type text = {
-    fontFamily: string;
-    fontWidth: string;
-    fontSize: number;
-    color: string;
+type Block = {
+    position: Position,
+    blockId: number,
+    contentType: Chars | Image | Figure,
+    size: Size,
+    isSelectedBlock: boolean
 }
 
-type image = {
+type Position = {
+    x: number;
+    y: number;
+}
+
+type Size = {
+    width: number,
+    heigth: number
+}
+
+type Chars = {
+    color: string,
+    content: string,
+    fontSize: number,
+    fontFamily:string,
+    fontBold: boolean,
+    fontItalic: boolean
+} 
+
+type Image = {
     src: string;
 }
 
-type figure = {
-    figureType: rectangle | circle | triangle;
-}
-
-type slide = {
-    id: string;
-    blocks: block[];
-    background: backgroundColor | backgroundImage;
-}
-
-type backgroundColor = {
-    color: string;
-}
-
-type backgroundImage = {
-    src: string;
-}
-
-type presentation = {
-    presentationName: string;
-    selectedSlidesIds: [];                    //Показывается последний элемент массива
-    selectedObjectsIds: [];
-    slides: slide[];
-}
-
-type rectangle = {
-    color: string;
-    borderColor: string;
-    mainPoint: {
-        x: number;
-        y: number;
-    }
-}
-
-type circle = {
-    centerPoint: {
-        x: number;
-        y: number;
-    };
-    radius: number;
+type Figure = {
+    figureType: Rectangle | Circle | Triangle,
     color: string;
     borderColor: string;
 }
 
-type triangle = {
-    mainPoin: {
-        x: number;
-        y: number;
-    }
+type Slide = {
+    slideId: number;
+    blocks: Block[];
+    background: BackgroundColor | BackgroundImage;
+    isSelectedSlide: boolean;
 }
 
-type editor = {
-    presentation: presentation;
+type BackgroundColor = {
+    color: string;
 }
+
+type BackgroundImage = {
+    src: string;
+}
+
+type Rectangle = {
+    color: string,
+    borderColor: string,
+}
+
+type Circle = {
+    color: string,
+    borderColor: string
+}
+
+type Triangle = {
+    color: string,
+    borderColor: string
+}
+
