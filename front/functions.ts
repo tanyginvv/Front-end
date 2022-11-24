@@ -1,16 +1,19 @@
 //functions
 
-// function createPresentation(presentation:Presentation): Presentation {
-//     let newPresentation: Presentation ={
-//         presentationName: "Новая презентация",                   
-//         slides: [],
-//         selectedSlides: []
-//     };
-//       return newPresentation
-// } 
-// function showPresentation(presentation:Presentation): Presentation{
-//     return presentation;
-// }
+function createPresentation(): Presentation {
+    return {
+        presentationName: 'Новая презентация',
+        slides: [],
+        selectedSlides: [],
+        slideSize: {
+            width:800,
+            height:600
+        }
+    };
+}
+function showPresentation(presentation:Presentation): Presentation{
+    return presentation;
+}
 function changePresentationName(presentation: Presentation, newName: string): Presentation {
     return {
         ...presentation,
@@ -18,20 +21,25 @@ function changePresentationName(presentation: Presentation, newName: string): Pr
     }
 }
 
-// //slide
-// function createSlide(slide:Slide , background:BackgroundColor | BackgroundImage): Slide{
-//     let newSlide: Slide = {
-//         size:{
-//             width:800,
-//             heigth:600
-//         },
-//         id:0,
-//         blocks: [],
-//         background: background,
-//         // isSelectedSlide:[]
-//     }
-//     return newSlide
-//   }
+function savePresentation(presentation:Presentation): Presentation{
+    return presentation;
+}
+
+//slide
+function createSlide(presentation: Presentation, newBackground: Background): Presentation {
+    const newSlide: Slide = {
+        slideId: presentation.slides.length + 1,
+        blocks: [],
+        selectedBlocks: [],
+        background: newBackground , //поменять на константное значение
+        isSelectedSlide: false
+    };
+    const newSlides = [...presentation.slides, newSlide];
+    return {
+        ...presentation,
+        slides: newSlides
+    };
+}
   
 // function deleteSlide(presentation: Presentation, slide: Slide): Presentation {
 //     return {
@@ -60,21 +68,75 @@ function editSlideSize(presentation: Presentation, slideId: number, newSize: Siz
         })
     }
 }
-// //block
-// function createBlock(contentType: Chars | Image | Figure): Block{
-//     let newBlock: Block = {
-//         id:0,
-//         position : {
-//             x:0,
-//             y:0
-//         },
-//         width: 800,
-//         height:400,
-//         contentType: contentType,
-//         selectedObjectsId:[],
-//     }
-//     return newBlock
-//   }
+
+function editSlideBackground(presentation: Presentation, slideId: number, newBackground: Background): Presentation {
+    const slide = presentation.slides[slideId]
+    const newSlide = {
+        ...slide,
+        background:newBackground,
+    }
+    return {
+        ...presentation,
+        slides: presentation.slides.map(( currentSlide, id) => {
+            if (id == slideId)
+            {
+                return newSlide
+            }
+            else
+            {
+                return currentSlide
+            }
+        })
+    }
+}
+
+function selectSlide(presentation: Presentation, slideId: number, newSelect: boolean): Presentation {
+    const slide = presentation.slides[slideId]
+    const newSlide = {
+        ...slide,
+        isSelectedSlide: newSelect,
+    }
+    return {
+        ...presentation,
+        slides: presentation.slides.map(( currentSlide, id) => {
+            if (id == slideId)
+            {
+                return newSlide
+            }
+            else
+            {
+                return currentSlide
+            }
+        })
+    }
+}
+//block
+function createBlock(presentation: Presentation, slideId: number, contentType: ContentType): Presentation {
+    const newBlock = {
+        contentType: contentType,
+        blockId: presentation.slides[slideId].blocks.length++,
+        position: {
+            x: 1,
+            y: 1
+        },
+        size :{
+            width: 50,
+            height: 50
+        },
+        isSelectedBlock: false
+    }
+    const newBlocks = [...presentation.slides[slideId].blocks, newBlock];
+    const newSlide = {
+        ...presentation.slides[slideId],
+        block: newBlock
+    }
+    return {
+        ...presentation,
+        slides: presentation.slides.map(( currentSlide, index) => {
+            return (index == slideId) ? newSlide : currentSlide;
+        })
+    };
+}
 // function deleteBlock(slide: Slide,block: Block): Slide {
 //     return {
 //         ...slide,
@@ -100,7 +162,6 @@ function moveBlock(presentation: Presentation, slideId: number, blockId: number,
             {
                 return currentBlock
             }
-        // Возвращает элемент для new_array
     })}
     return {
         ...presentation,
@@ -115,6 +176,45 @@ function moveBlock(presentation: Presentation, slideId: number, blockId: number,
             }
         })
     }
+}
+
+function editBlockSize(presentation: Presentation, slideId: number, blockId: number, newSize: Size): Presentation {
+    const slide = presentation.slides[slideId];
+    const block = slide.blocks[blockId];
+    const newBlock = {
+        ...block,
+        size : newSize
+    }
+    const newSlide = {
+        ...slide,
+        blocks: slide.blocks.map(( currentBlock, index) => {
+            return (index == blockId) ? newBlock : currentBlock;
+        })};
+    return {
+        ...presentation,
+        slides: presentation.slides.map(( currentSlide, index) => {
+            return (index == slideId) ? newSlide : currentSlide;
+        })
+    };
+}
+function selectBlock(presentation: Presentation, slideId: number, blockId: number, newSelect: boolean): Presentation {
+    const slide = presentation.slides[slideId];
+    const block = slide.blocks[blockId];
+    const newBlock = {
+        ...block,
+        isSelectedBlock: newSelect
+    }
+    const newSlide = {
+        ...slide,
+        blocks: slide.blocks.map(( currentBlock, index) => {
+            return (index == blockId) ? newBlock : currentBlock;
+        })};
+    return {
+        ...presentation,
+        slides: presentation.slides.map(( currentSlide, index) => {
+            return (index == slideId) ? newSlide : currentSlide;
+        })
+    };
 }
 //figure
 function editFigureColor(presentation: Presentation, slideId: number, blockId: number, newColor: string): Presentation {
@@ -135,7 +235,6 @@ function editFigureColor(presentation: Presentation, slideId: number, blockId: n
             {
                 return currentBlock
             }
-        // Возвращает элемент для new_array
     })}
     return {
         ...presentation,
@@ -169,7 +268,6 @@ function editFigureBorderColor(presentation: Presentation, slideId: number, bloc
             {
                 return currentBlock
             }
-        // Возвращает элемент для new_array
     })}
     return {
         ...presentation,
@@ -185,7 +283,7 @@ function editFigureBorderColor(presentation: Presentation, slideId: number, bloc
         })
     }
 }
-// //chars
+ //chars
 function editCharsColor(presentation: Presentation, slideId: number, blockId: number, newColor: string): Presentation {
     const slide = presentation.slides[slideId]
     const block = slide.blocks[blockId]
@@ -204,7 +302,6 @@ function editCharsColor(presentation: Presentation, slideId: number, blockId: nu
             {
                 return currentBlock
             }
-        // Возвращает элемент для new_array
     })}
     return {
         ...presentation,
@@ -221,7 +318,7 @@ function editCharsColor(presentation: Presentation, slideId: number, blockId: nu
     }
 }
 
-function editFontFamily(presentation: Presentation, slideId: number, blockId: number, newFontFamily: string): Presentation {
+function editCharsFontFamily(presentation: Presentation, slideId: number, blockId: number, newFontFamily: string): Presentation {
     const slide = presentation.slides[slideId]
     const block = slide.blocks[blockId]
     const newBlock = {
@@ -239,7 +336,6 @@ function editFontFamily(presentation: Presentation, slideId: number, blockId: nu
             {
                 return currentBlock
             }
-        // Возвращает элемент для new_array
     })}
     return {
         ...presentation,
@@ -273,7 +369,6 @@ function editCharsContent(presentation: Presentation, slideId: number, blockId: 
             {
                 return currentBlock
             }
-        // Возвращает элемент для new_array
     })}
     return {
         ...presentation,
@@ -307,7 +402,6 @@ function editCharsFontSize(presentation: Presentation, slideId: number, blockId:
             {
                 return currentBlock
             }
-        // Возвращает элемент для new_array
     })}
     return {
         ...presentation,
@@ -342,7 +436,6 @@ function editCharsFontBold(presentation: Presentation, slideId: number, blockId:
             {
                 return currentBlock
             }
-        // Возвращает элемент для new_array
     })}
     return {
         ...presentation,
@@ -376,7 +469,6 @@ function editCharsFontItalic(presentation: Presentation, slideId: number, blockI
             {
                 return currentBlock
             }
-        // Возвращает элемент для new_array
     })}
     return {
         ...presentation,
@@ -393,53 +485,3 @@ function editCharsFontItalic(presentation: Presentation, slideId: number, blockI
     }
 }
 
-// //image
-// function createImage(path: string):Image{
-//     let newImage: Image = {
-//         size: {
-//             width: 100,
-//             heigth: 100
-//         },
-//         src: path
-//     };
-//     return newImage;
-// }
-// //circle
-// function createCircle(block: Figure, circle: Figure ):Circle{
-//     let newCircle: Circle = {
-//         mainPoint :{
-//             x: 100,
-//             y: 100
-//         },
-//         color: "black",
-//         borderColor: "black",
-//         radius:10
-//     };
-//     return newCircle
-// }
-
-// //rectangle
-// function createRectangle(block:Figure, rectangle: Figure):Rectangle {
-//     let newRectangle: Rectangle = {
-//         mainPoint :{
-//             x: 100,
-//             y: 100
-//         },
-//         color: "black",
-//         borderColor: "black"
-//     };
-//     return newRectangle
-// }
-
-// //triangle
-// function createTriangle( block:Figure, triangle: Figure ):Triangle{
-//     let newTriangle: Triangle = {
-//         mainPoint :{
-//             x: 100,
-//             y: 100
-//         },
-//         color: "black",
-//         borderColor: "black"
-//     };
-//     return newTriangle
-// }
