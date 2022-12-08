@@ -11,9 +11,11 @@ function createPresentation(): Presentation {
         }
     };
 }
+
 function showPresentation(presentation:Presentation): Presentation{
     return presentation;
 }
+
 function changePresentationName(presentation: Presentation, newName: string): Presentation {
     return {
         ...presentation,
@@ -28,11 +30,10 @@ function savePresentation(presentation:Presentation): Presentation{
 //slide
 function createSlide(presentation: Presentation, newBackground: Background): Presentation {
     const newSlide: Slide = {
-        slideId: presentation.slides.length + 1,
+        slideId: presentation.slides.length++,
         blocks: [],
         selectedBlocks: [],
-        background: newBackground , //поменять на константное значение
-        isSelectedSlide: false
+        background: newBackground  //поменять на константное значение
     };
     const newSlides = [...presentation.slides, newSlide];
     return {
@@ -41,11 +42,27 @@ function createSlide(presentation: Presentation, newBackground: Background): Pre
     };
 }
   
-// function deleteSlide(presentation: Presentation, slide: Slide): Presentation {
+function removeSlide(presentation: Presentation, slideId: number): Presentation {
+    return {
+        ...presentation,
+        slides: presentation.slides.filter((slide, id) => id !== slideId)
+    };
+}
+
+// function selectSlide(presentation: Presentation, slideId: number): Presentation {
+//     const slide = presentation.slides[slideId];
+//     const newSelectedSlides = [...presentation.selectedSlides, slide];
 //     return {
 //         ...presentation,
-//         //
+//         selectedSlides: newSelectedSlides
 //     };
+// }
+
+// function selectSlides(presentation:Presentation, slideIds: []): Presentation {
+//     slideIds.forEach((item) => {
+//         selectSlide(presentation, item);
+//     });
+//     return presentation;
 // }
 
 function editSlideSize(presentation: Presentation, slideId: number, newSize: Size): Presentation {
@@ -57,16 +74,9 @@ function editSlideSize(presentation: Presentation, slideId: number, newSize: Siz
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
+            return (id == slideId) ? newSlide : currentSlide;
         })
-    }
+    };
 }
 
 function editSlideBackground(presentation: Presentation, slideId: number, newBackground: Background): Presentation {
@@ -78,38 +88,19 @@ function editSlideBackground(presentation: Presentation, slideId: number, newBac
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
+            return (id == slideId) ? newSlide : currentSlide;
         })
-    }
+    };
 }
-
-function selectSlide(presentation: Presentation, slideId: number, newSelect: boolean): Presentation {
-    const slide = presentation.slides[slideId]
-    const newSlide = {
-        ...slide,
-        isSelectedSlide: newSelect,
-    }
+function moveSlide(presentation: Presentation, oldSlideId: number, newSlideId: number): Presentation {
+    const newSlides = [...presentation.slides];
+    [newSlides[oldSlideId], newSlides[newSlideId]] = [newSlides[newSlideId], newSlides[oldSlideId]]
     return {
         ...presentation,
-        slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
-        })
-    }
+        slides: newSlides
+    };
 }
+
 //block
 function createBlock(presentation: Presentation, slideId: number, contentType: ContentType): Presentation {
     const newBlock = {
@@ -122,8 +113,7 @@ function createBlock(presentation: Presentation, slideId: number, contentType: C
         size :{
             width: 50,
             height: 50
-        },
-        isSelectedBlock: false
+        }
     }
     const newBlocks = [...presentation.slides[slideId].blocks, newBlock];
     const newSlide = {
@@ -132,18 +122,40 @@ function createBlock(presentation: Presentation, slideId: number, contentType: C
     }
     return {
         ...presentation,
-        slides: presentation.slides.map(( currentSlide, index) => {
-            return (index == slideId) ? newSlide : currentSlide;
+        slides: presentation.slides.map(( currentSlide, id) => {
+            return (id == slideId) ? newSlide : currentSlide;
         })
     };
 }
-// function deleteBlock(slide: Slide,block: Block): Slide {
-//     return {
-//         ...slide,
-//         //
-// };
-// }
+function removeBlock(presentation: Presentation, blockId: number, slideId: number): Presentation {
+    const slides = presentation.slides;
+    const slide = slides[slideId];
+    const newSlide = {
+        ...slide,
+        blocks: slide.blocks.filter((block, id) => id !== blockId)
+    }
+    return {
+        ...presentation,
+        slides: presentation.slides.map(( currentSlide, id) => {
+            return (id === slideId) ? newSlide : currentSlide;
+        })
+    };
+}
 
+function selectBlock(presentation: Presentation, slideId: number, blockId: number): Presentation {
+    const newSelectedBlock = presentation.slides[slideId].blocks[blockId];
+    const newSelectedBlocks = [...presentation.slides[slideId].selectedBlocks, newSelectedBlock];
+    const newSlide = {
+        ...presentation.slides[slideId],
+        selectedBlocks: newSelectedBlocks
+    }
+    return {
+        ...presentation,
+        slides: presentation.slides.map(( currentSlide, id) => {
+            return (id === slideId) ? newSlide : currentSlide;
+        })
+    };
+}
 function moveBlock(presentation: Presentation, slideId: number, blockId: number, newPosition: Position): Presentation {
     const slide = presentation.slides[slideId]
     const block = slide.blocks[blockId]
@@ -154,26 +166,12 @@ function moveBlock(presentation: Presentation, slideId: number, blockId: number,
     const newSlide = {
         ...slide,
         blocks: slide.blocks.map(( currentBlock, id) => {
-            if (id == blockId)
-            {
-                return newBlock
-            }
-            else
-            {
-                return currentBlock
-            }
+            return (id == blockId) ? newBlock : currentBlock;
     })}
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
+            return (id == slideId) ? newSlide : currentSlide;
         })
     }
 }
@@ -187,32 +185,13 @@ function editBlockSize(presentation: Presentation, slideId: number, blockId: num
     }
     const newSlide = {
         ...slide,
-        blocks: slide.blocks.map(( currentBlock, index) => {
-            return (index == blockId) ? newBlock : currentBlock;
+        blocks: slide.blocks.map(( currentBlock, id) => {
+            return (id == blockId) ? newBlock : currentBlock;
         })};
     return {
         ...presentation,
-        slides: presentation.slides.map(( currentSlide, index) => {
-            return (index == slideId) ? newSlide : currentSlide;
-        })
-    };
-}
-function selectBlock(presentation: Presentation, slideId: number, blockId: number, newSelect: boolean): Presentation {
-    const slide = presentation.slides[slideId];
-    const block = slide.blocks[blockId];
-    const newBlock = {
-        ...block,
-        isSelectedBlock: newSelect
-    }
-    const newSlide = {
-        ...slide,
-        blocks: slide.blocks.map(( currentBlock, index) => {
-            return (index == blockId) ? newBlock : currentBlock;
-        })};
-    return {
-        ...presentation,
-        slides: presentation.slides.map(( currentSlide, index) => {
-            return (index == slideId) ? newSlide : currentSlide;
+        slides: presentation.slides.map(( currentSlide, id) => {
+            return (id == slideId) ? newSlide : currentSlide;
         })
     };
 }
@@ -227,29 +206,14 @@ function editFigureColor(presentation: Presentation, slideId: number, blockId: n
     const newSlide = {
         ...slide,
         blocks: slide.blocks.map(( currentBlock, id) => {
-            if (id == blockId)
-            {
-                return newBlock
-            }
-            else
-            {
-                return currentBlock
-            }
-    })}
+            return (id == blockId) ? newBlock : currentBlock;
+        })};
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
-        })
+            return (id == slideId) ? newSlide : currentSlide;
+        })};
     }
-}
 function editFigureBorderColor(presentation: Presentation, slideId: number, blockId: number, newBorderColor: string): Presentation {
     const slide = presentation.slides[slideId]
     const block = slide.blocks[blockId]
@@ -260,29 +224,14 @@ function editFigureBorderColor(presentation: Presentation, slideId: number, bloc
     const newSlide = {
         ...slide,
         blocks: slide.blocks.map(( currentBlock, id) => {
-            if (id == blockId)
-            {
-                return newBlock
-            }
-            else
-            {
-                return currentBlock
-            }
-    })}
+            return (id == blockId) ? newBlock : currentBlock;
+        })};
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
+            return (id == slideId) ? newSlide : currentSlide;
         })
-    }
-}
+    };}
  //chars
 function editCharsColor(presentation: Presentation, slideId: number, blockId: number, newColor: string): Presentation {
     const slide = presentation.slides[slideId]
@@ -294,29 +243,14 @@ function editCharsColor(presentation: Presentation, slideId: number, blockId: nu
     const newSlide = {
         ...slide,
         blocks: slide.blocks.map(( currentBlock, id) => {
-            if (id == blockId)
-            {
-                return newBlock
-            }
-            else
-            {
-                return currentBlock
-            }
-    })}
+            return (id == blockId) ? newBlock : currentBlock;
+        })};
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
+            return (id == slideId) ? newSlide : currentSlide;
         })
-    }
-}
+    };}
 
 function editCharsFontFamily(presentation: Presentation, slideId: number, blockId: number, newFontFamily: string): Presentation {
     const slide = presentation.slides[slideId]
@@ -328,29 +262,14 @@ function editCharsFontFamily(presentation: Presentation, slideId: number, blockI
     const newSlide = {
         ...slide,
         blocks: slide.blocks.map(( currentBlock, id) => {
-            if (id == blockId)
-            {
-                return newBlock
-            }
-            else
-            {
-                return currentBlock
-            }
-    })}
+            return (id == blockId) ? newBlock : currentBlock;
+        })};
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
+            return (id == slideId) ? newSlide : currentSlide;
         })
-    }
-}
+    };}
 function editCharsContent(presentation: Presentation, slideId: number, blockId: number, newContent: string): Presentation {
     const slide = presentation.slides[slideId]
     const block = slide.blocks[blockId]
@@ -360,30 +279,15 @@ function editCharsContent(presentation: Presentation, slideId: number, blockId: 
     }
     const newSlide = {
         ...slide,
-        blockList: slide.blocks.map(( currentBlock, id) => {
-            if (id == blockId)
-            {
-                return newBlock
-            }
-            else
-            {
-                return currentBlock
-            }
-    })}
+        blocks: slide.blocks.map(( currentBlock, id) => {
+            return (id == blockId) ? newBlock : currentBlock;
+        })};
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
-        })
+            return (id == slideId) ? newSlide : currentSlide;
+        })};
     }
-}
 function editCharsFontSize(presentation: Presentation, slideId: number, blockId: number, newFontSize: string): Presentation {
     const slide = presentation.slides[slideId]
     const block = slide.blocks[blockId]
@@ -394,28 +298,14 @@ function editCharsFontSize(presentation: Presentation, slideId: number, blockId:
     const newSlide = {
         ...slide,
         blocks: slide.blocks.map(( currentBlock, id) => {
-            if (id == blockId)
-            {
-                return newBlock
-            }
-            else
-            {
-                return currentBlock
-            }
-    })}
+            return (id == blockId) ? newBlock : currentBlock;
+        })};
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
+            return (id == slideId) ? newSlide : currentSlide;
         })
-    }
+    };
 }
 
 function editCharsFontBold(presentation: Presentation, slideId: number, blockId: number, newFontBold: boolean): Presentation {
@@ -428,29 +318,14 @@ function editCharsFontBold(presentation: Presentation, slideId: number, blockId:
     const newSlide = {
         ...slide,
         blocks: slide.blocks.map(( currentBlock, id) => {
-            if (id == blockId)
-            {
-                return newBlock
-            }
-            else
-            {
-                return currentBlock
-            }
-    })}
+            return (id == blockId) ? newBlock : currentBlock;
+        })};
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
-        })
+            return (id == slideId) ? newSlide : currentSlide;
+        })};
     }
-}
 function editCharsFontItalic(presentation: Presentation, slideId: number, blockId: number, newFontItalic: boolean): Presentation {
     const slide = presentation.slides[slideId]
     const block = slide.blocks[blockId]
@@ -461,27 +336,11 @@ function editCharsFontItalic(presentation: Presentation, slideId: number, blockI
     const newSlide = {
         ...slide,
         blocks: slide.blocks.map(( currentBlock, id) => {
-            if (id == blockId)
-            {
-                return newBlock
-            }
-            else
-            {
-                return currentBlock
-            }
-    })}
+            return (id == blockId) ? newBlock : currentBlock;
+        })};
     return {
         ...presentation,
         slides: presentation.slides.map(( currentSlide, id) => {
-            if (id == slideId)
-            {
-                return newSlide
-            }
-            else
-            {
-                return currentSlide
-            }
-        })
+            return (id == slideId) ? newSlide : currentSlide;
+        })};
     }
-}
-
